@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "view/sdl.h"
+#include <view/sdlInterface.h>
 
 int main() {
     char choix;
@@ -10,9 +10,11 @@ int main() {
         while (getchar() != '\n');
     } while (choix != 's' && choix != 'n');
 
-    if (choix == 'n') {
+    if (choix == 's') {
         printf("Lancement de SDL\n");
-    } else if (choix == 's') {
+        initialisation_sdl();
+
+    } else if (choix == 'n') {
         printf("Lancement de ncruse\n");
     }
 

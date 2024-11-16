@@ -8,7 +8,7 @@ typedef struct Moto {
     Direction Direction;
 };
 
-int creationDuJeu() {
+int * creationDuJeu() {
 
     int colonnes = 100;
     int lignes = 100;
@@ -17,10 +17,5 @@ int creationDuJeu() {
     for (int i = 0;i!=lignes;i++) {
         plateau[i] = malloc(colonnes*sizeof(int));
     }
-    return 0;
-}
-
-
-int main() {
-    return 0;
+    return plateau;
 }
