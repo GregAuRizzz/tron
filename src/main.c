@@ -5,7 +5,7 @@
 int main() {
     char choix;
     do {
-        printf("\nSouhaitez-vous ncurses (n) ou sdl (s) ? (s,n) : ");
+        printf("\nSouhaitez-vous ncurses (n) ou sdl (s) ? (tapez s ou n) : ");
         choix = getchar();
         while (getchar() != '\n');
     } while (choix != 's' && choix != 'n');

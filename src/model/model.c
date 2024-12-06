@@ -1,21 +1,32 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
-#include <model.h>
+#include "model.h"
 
-typedef enum Direction {GAUCHE,DROITE,HAUT,BAS} Direction;
+int **creationDuJeu() {
+    int colonnes = 1000;  
+    int lignes = 500;
 
-typedef struct Moto {
-    Direction Direction;
-};
+    int **plateau = malloc(lignes * sizeof(int*));
+    assert(plateau);
 
-int * creationDuJeu() {
-
-    int colonnes = 100;
-    int lignes = 100;
-    int *plateau =  malloc(lignes*sizeof(int));
-
-    for (int i = 0;i!=lignes;i++) {
-        plateau[i] = malloc(colonnes*sizeof(int));
+    for (int i = 0; i < lignes; i++) {
+        plateau[i] = malloc(colonnes * sizeof(int));
+        assert(plateau[i]);
     }
+
+    for (int i = 0; i < lignes; i++) {
+        for (int j = 0; j < colonnes; j++) {
+            plateau[i][j] = 0; 
+        }
+    }
+
     return plateau;
+}
+
+void free_jeu(int **plateau, int lignes) {
+    for (int i = 0; i < lignes; i++) {
+        free(plateau[i]);
+    }
+    free(plateau);
 }
