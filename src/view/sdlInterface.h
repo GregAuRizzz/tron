@@ -20,6 +20,9 @@ typedef struct {
 
 int initialisation_sdl();
 
+void destroy_start_button();
+
+void PrintPlateau(Model * model, int ** plateau);
 
 windowManager *windowManager_init(char *name, int w, int h);
 
