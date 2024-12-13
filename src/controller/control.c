@@ -16,12 +16,10 @@ void events(SDL_Event *event, int *running, Moto * moto1, Moto * moto2,Model * m
                 printf("%s\n",SDL_GetKeyName(event->key.keysym.sym));
                 clavier_evenement(event->key.keysym.sym, moto1, moto2);
                 break;
-
             case SDL_MOUSEBUTTONDOWN:
                 clique_souris(event->button.x, event->button.y, running);
-                // start_jeu(plateau,moto1,moto2,model);
+                start_jeu(plateau,moto1,moto2,model);
                 break;
-
             default:
                 break;
         }
