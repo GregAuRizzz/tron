@@ -42,7 +42,7 @@ int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model) {
 void start_jeu(int **plateau, Moto * moto1,Moto * moto2,Model * model) {
     while (verif_collision(plateau,moto1,moto2) == CONTINUER) {
         PrintPlateau(model,plateau);
-        avancer(plateau,&moto1,&moto2);
+        avancer(plateau,moto1,moto2);
         sleep(3);
     };
 }
