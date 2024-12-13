@@ -22,8 +22,6 @@ void start_jeu(int **plateau, Moto * moto1,Moto * moto2,Model * model);
 
 Gagnant verif_collision(int **plateau, Moto * moto1,Moto * moto2);
 
-void avancer(int **plateau, Moto * moto1,Moto * moto2);
-
 
 void free_jeu(int **plateau, Model model);
 
