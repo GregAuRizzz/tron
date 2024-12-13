@@ -21,11 +21,7 @@ typedef enum GAGNANT {JOUEUR1,JOUEUR2,CONTINUER,EGALITE} Gagnant;
 void start_jeu(int **plateau, Moto * moto1,Moto * moto2,Model * model);
 
 
-<<<<<<< HEAD
 Gagnant avancer(int **plateau, Moto * moto1,Moto * moto2,Model * model);
-
-=======
->>>>>>> 68f8036fcaed78f6d044559e10333ca20d3efe3a
 
 void free_jeu(int **plateau, Model model);
 

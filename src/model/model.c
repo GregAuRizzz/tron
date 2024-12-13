@@ -44,14 +44,8 @@ int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model) {
 void start_jeu(int **plateau, Moto * moto1,Moto * moto2,Model * model) {
     while (avancer(plateau,moto1,moto2, model) == CONTINUER) {
         PrintPlateau(model,plateau);
-<<<<<<< HEAD
         usleep(400000);
     }; 
-=======
-        avancer(plateau,&moto1,&moto2);
-        sleep(3);
-    };
->>>>>>> 68f8036fcaed78f6d044559e10333ca20d3efe3a
 }
 
 Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model) {
