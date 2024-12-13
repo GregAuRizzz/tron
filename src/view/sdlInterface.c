@@ -95,7 +95,8 @@ int initialisation_sdl() {
 
     SDL_Event event;
     int running = 1;
-    Moto moto1,moto2;
+    Moto * moto1 = malloc(sizeof(Moto));
+    Moto * moto2 = malloc(sizeof(Moto));
     
     Model *model = malloc(sizeof(Model));
     if (model == NULL) {
@@ -103,9 +104,9 @@ int initialisation_sdl() {
         exit(EXIT_FAILURE);
     }
     model->colonnes = 50;
-    model->lignes = 20;
+    model->lignes = 21;
 
-    int **plateau = creationDuJeu(&moto1,&moto2,model);
+    int **plateau = creationDuJeu(moto1,moto2,model);
 
     while (running) {
         events(&event, &running, moto1, moto2,model,plateau);

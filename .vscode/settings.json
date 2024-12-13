@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "sdl.h": "c",
-        "sdlinterface.h": "c"
+        "sdlinterface.h": "c",
+        "unistd.h": "c"
     }
 }

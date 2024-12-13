@@ -2,7 +2,6 @@
 #define SDLINTERFACE_H
 
 #include <SDL2/SDL.h>
-
 #include "model/model.h"
 
 struct Tron;

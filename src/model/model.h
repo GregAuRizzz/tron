@@ -14,7 +14,13 @@ typedef struct Model {
     int lignes,colonnes;
 } Model;
 
-int ** creationDuJeu(Moto * m,Moto * m2,Model * model);
+int ** creationDuJeu(Moto * moto1, Moto * moto2, Model * model);
+
+typedef enum GAGNANT {JOUEUR1,JOUEUR2,CONTINUER} Gagnant;
+
+void start_jeu(int **plateau, Moto * moto1,Moto * moto2,Model * model);
+
+Gagnant verif_collision(int **plateau, Moto * moto1,Moto * moto2);
 
 
 void free_jeu(int **plateau, Model model);
