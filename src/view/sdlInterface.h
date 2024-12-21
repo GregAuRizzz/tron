@@ -21,10 +21,12 @@ int initialisation_sdl();
 
 void destroy_start_button();
 
-void PrintPlateau(Model * model, int ** plateau);
+void PrintPlateau(Model *model, int **plateau);
 
 windowManager *windowManager_init(char *name, int w, int h);
 
 void windowManager_destroy(windowManager *window);
+
+void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL_Texture *logo);
 
 #endif

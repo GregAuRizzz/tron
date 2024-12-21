@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "model.h"
 #include <unistd.h>
-#include "view/sdlInterface.h"
 
+#include "model.h"
+#include "view/sdlInterface.h"
+#include "controller/control.h"
 
 int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model) {
     int colonnes = model->colonnes;
@@ -41,11 +42,11 @@ int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model) {
     return plateau;
 }
 
-void start_jeu(int **plateau, Moto * moto1,Moto * moto2,Model * model) {
+void start_jeu(SDL_Event * event,int **plateau, Moto * moto1,Moto * moto2,Model * model,int *game_started) {
     while (avancer(plateau,moto1,moto2, model) == CONTINUER) {
-        PrintPlateau(model,plateau);
+        events_pendant_le_jeu(event,moto1,moto2,game_started,model,plateau);
         usleep(400000);
-    }; 
+    };
 }
 
 Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model) {
@@ -59,7 +60,7 @@ Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model) {
     } else if (moto1->directions == GAUCHE && moto1->x > 0 && plateau[moto1->y][moto1->x-1] == 0) {
         moto1->x -= 1;
     } else {
-        printf("Joueur 2 gagné");
+        printf("Joueur 2 gagné\n");
         return JOUEUR2;
     }
 
@@ -72,7 +73,7 @@ Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model) {
     } else if (moto2->directions == GAUCHE && moto2->x > 0 && plateau[moto2->y][moto2->x-1] == 0) {
         moto2->x -= 1;
     } else {
-        printf("Joueur 1 gagné");
+        printf("Joueur 1 gagné\n");
         return JOUEUR1;
     }
 

@@ -4,29 +4,39 @@
 #include "model/model.h"
 #include "view/sdlInterface.h"
 
-void events(SDL_Event *event, int *running, Moto * moto1, Moto * moto2,Model * model,int ** plateau) {
-    while (SDL_PollEvent(event)) {
-        switch (event->type) {
-            case SDL_QUIT:
-                *running = 0;
-                break;
+void events_pendant_le_jeu(SDL_Event *event, Moto *moto1, Moto *moto2,int * game_started,Model * model,int ** plateau) {
+    while (SDL_PollEvent(event) && game_started) {
+        if (event->type == SDL_KEYDOWN) {
+            break;
+        }
+    }    
+    PrintPlateau(model,plateau);
+    clavier_evenement(event->key.keysym.sym, moto1, moto2);
 
-            case SDL_KEYDOWN:
-                PrintPlateau(model,plateau);
-                printf("%s\n",SDL_GetKeyName(event->key.keysym.sym));
-                clavier_evenement(event->key.keysym.sym, moto1, moto2);
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                clique_souris(event->button.x, event->button.y, running);
-                start_jeu(plateau,moto1,moto2,model);
-                break;
-            default:
-                break;
+}
+
+void events(SDL_Event *event, int *running, Moto *moto1, Moto *moto2, Model *model, int **plateau) {
+
+    int game_started = 0;
+    while (*running) {
+        while (SDL_PollEvent(event)) {
+            switch (event->type) {
+                case SDL_QUIT:
+                    *running = 0;
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    clique_bouton_start(event,event->button.x, event->button.y, &game_started,moto1,moto2,plateau,model);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
 
-void clique_souris(int mouseX, int mouseY, int *running) {
+void clique_bouton_start(SDL_Event *event, int mouseX, int mouseY, int *game_started, Moto *moto1, Moto *moto2, int **plateau, Model *model) {
     int buttonWidth = 200;
     int buttonHeight = 100;
     int buttonX = (800 - buttonWidth) / 2;
@@ -34,13 +44,14 @@ void clique_souris(int mouseX, int mouseY, int *running) {
 
     if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
         mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
-        printf("Bouton cliqué\n");
+        *game_started = 1;
         destroy_start_button();
-        *running = 0;
+        start_jeu(event, plateau, moto1, moto2, model, game_started);
     }
 }
 
-void clavier_evenement(SDL_Keycode key, Moto * moto1, Moto * moto2) {
+
+void clavier_evenement(SDL_Keycode key, Moto *moto1, Moto *moto2) {
     switch (key) {
         case SDLK_z:
             if ((moto1->directions == GAUCHE) || (moto1->directions == DROITE)) {
