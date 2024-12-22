@@ -45,7 +45,7 @@ int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model) {
 void start_jeu(SDL_Event * event,int **plateau, Moto * moto1,Moto * moto2,Model * model,int *game_started) {
     while (avancer(plateau,moto1,moto2, model) == CONTINUER) {
         events_pendant_le_jeu(event,moto1,moto2,game_started,model,plateau);
-        usleep(300000);
+        usleep(100000);
     };
 }
 

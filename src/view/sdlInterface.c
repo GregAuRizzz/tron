@@ -11,6 +11,7 @@ SDL_Texture *StartBouton;
 SDL_Renderer *renderer;
 SDL_Texture *backgroundTexture;
 SDL_Texture *Logo;
+SDL_Window *window;
 
 void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *backgroundTexture, SDL_Texture *StartBouton) {
     if (StartBouton) SDL_DestroyTexture(StartBouton);
@@ -22,31 +23,33 @@ void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *
 }
 
 void PrintPlateau(Model *model, int **plateau) {
-    int i, j;
-    int cellWidth = 600 / model->colonnes;
-    int cellHeight = 600 / model->lignes;
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
 
-    int offsetX = (800 - (model->colonnes * cellWidth)) / 2;
-    int offsetY = (600 - (model->lignes * cellHeight)) / 2; 
+    int cellWidth = width / (model->colonnes + 2);
+    int cellHeight = (height - 100) / (model->lignes + 2);
 
-    for (i = 0; i < model->lignes - 2; i++) {
-        for (j = 0; j < model->colonnes - 2; j++) {
+    int offsetX = (width - (model->colonnes * cellWidth)) / 2;
+    int offsetY = (height - (model->lignes * cellHeight) - 100) / 2;
+
+    for (int i = 0; i < model->lignes; i++) {
+        for (int j = 0; j < model->colonnes; j++) {
             SDL_Rect cellRect = { offsetX + j * cellWidth, offsetY + i * cellHeight, cellWidth, cellHeight };
 
             if (plateau[i][j] == 0) {
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0); 
-            } 
-            else if(plateau[i][j] == 2) {
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); 
-            }
-            else {
-                SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); 
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            } else if (plateau[i][j] == 2) {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            } else {
+                SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
             }
 
-            SDL_RenderFillRect(renderer, &cellRect); 
+            SDL_RenderFillRect(renderer, &cellRect);
+            SDL_RenderDrawRect(renderer, &cellRect);
         }
     }
-    SDL_RenderPresent(renderer);
+
+    SDL_RenderPresent(renderer); 
 }
 
 void destroy_start_button() {
@@ -59,7 +62,7 @@ void destroy_start_button() {
     SDL_RenderPresent(renderer);
 }
 
-void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton,SDL_Texture * logo) {
+void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL_Texture *logo) {
     SDL_Rect buttonRect = { (800 - 200) / 2, (600 - 100) / 2, 200, 100 };
     SDL_RenderCopy(renderer, StartBouton, NULL, &buttonRect);
 
@@ -67,7 +70,7 @@ void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton,SDL_
     SDL_RenderCopy(renderer, logo, NULL, &logoRect);
 }
 
-int initialisation_sdl() {
+int initialisation_sdl(int height_sdl,int width_sdl) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         perror("Erreur SDL_Init");
         return -1;
@@ -79,10 +82,7 @@ int initialisation_sdl() {
         return -1;
     }
 
-    int height_sdl = 700;
-    int width_sdl = 600;
-
-    SDL_Window *window = SDL_CreateWindow("Tron", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, height_sdl, width_sdl, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Tron", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width_sdl, height_sdl, SDL_WINDOW_SHOWN);
     if (!window) {
         perror("Erreur SDL_CreateWindow");
         destroy_resources(window, NULL, NULL, NULL);
@@ -128,9 +128,8 @@ int initialisation_sdl() {
         return -1;
     }
 
-
     SDL_Surface *LogoSurface = IMG_Load("src/utils/img/logo.png");
-    if (!buttonSurface) {
+    if (!LogoSurface) {
         perror("Erreur IMG_Load (Logo)");
         destroy_resources(window, renderer, backgroundTexture, NULL);
         return -1;
@@ -148,10 +147,8 @@ int initialisation_sdl() {
         fprintf(stderr, "Erreur : échec de l'allocation mémoire.\n");
         exit(EXIT_FAILURE);
     }
-    model->colonnes = (height_sdl/20)-10;
-    model->lignes = (width_sdl/20)-4;
-    
-    printf("%d,%d",model->colonnes,model->lignes);
+    model->colonnes = 100;
+    model->lignes = 70;
 
     int **plateau = creationDuJeu(moto1, moto2, model);
 
@@ -159,7 +156,7 @@ int initialisation_sdl() {
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
-    afficher_bouton_start(renderer, StartBouton,Logo);
+    afficher_bouton_start(renderer, StartBouton, Logo);
     SDL_RenderPresent(renderer);
 
     events(&event, &running, moto1, moto2, model, plateau);
