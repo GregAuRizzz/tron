@@ -2,20 +2,23 @@
 #define SDLINTERFACE_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <SDL2/SDL_ttf.h>
+
 #include "model/model.h"
+#include "controller/control.h"
 
 struct Tron;
+
+
 
 typedef struct {
   SDL_Window *window;
   SDL_Renderer *renderer;
 } windowManager;
 
-typedef struct {
-  void *data;
-  void (*affichage)(void *data, struct Tron *game);
-  int (*getNextAction)(void *data, int *ligne, int *colonne);
-} userInterface;
 
 int initialisation_sdl();
 
@@ -27,6 +30,10 @@ windowManager *windowManager_init(char *name, int w, int h);
 
 void windowManager_destroy(windowManager *window);
 
-void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL_Texture *logo);
+void afficher_bouton_start();
+
+void afficher_bouton_restart();
+
+
 
 #endif

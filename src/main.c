@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <view/sdlInterface.h>
+#include <view/view_sdl.h>
+#include <view/view_ncurses.h>
 
 int main(int argc, char *argv[]) {
     char choix = ' ';
@@ -23,7 +24,8 @@ int main(int argc, char *argv[]) {
         initialisation_sdl(width, height);
 
     } else if (choix == 'n') {
-        printf("Lancement de ncurse\n");
+        initialisation_ncurses(height,width);
+
     } else {
         printf("Option non valide. Veuillez utiliser -ncurse ou -sdl.\n");
     }

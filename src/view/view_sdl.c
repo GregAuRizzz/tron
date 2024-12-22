@@ -1,19 +1,14 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "sdlInterface.h"
-#include "model/model.h"
-#include "controller/control.h"
+#include "view_sdl.h"
 
 SDL_Texture *StartBouton;
 SDL_Renderer *renderer;
 SDL_Texture *backgroundTexture;
 SDL_Texture *Logo;
 SDL_Window *window;
+SDL_Texture *RestartBouton;
 
-void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *backgroundTexture, SDL_Texture *StartBouton) {
+void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *backgroundTexture, SDL_Texture *StartBouton, SDL_Texture *RestartBouton) {
+    if (RestartBouton) SDL_DestroyTexture(RestartBouton);
     if (StartBouton) SDL_DestroyTexture(StartBouton);
     if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);
     if (renderer) SDL_DestroyRenderer(renderer);
@@ -49,28 +44,51 @@ void PrintPlateau(Model *model, int **plateau) {
         }
     }
 
-    SDL_RenderPresent(renderer); 
+    SDL_RenderPresent(renderer);
 }
 
 void destroy_start_button() {
     SDL_RenderClear(renderer);
-
     if (backgroundTexture) {
         SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
     }
+    SDL_RenderPresent(renderer);
+}
+
+
+
+void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL_Texture *logo) {
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
+
+    int logoWidth, logoHeight;
+    SDL_QueryTexture(logo, NULL, NULL, &logoWidth, &logoHeight);
+
+    logoWidth /= 2;
+    logoHeight /= 2;
+
+    SDL_Rect logoRect = { (width - logoWidth) / 2, 20, logoWidth, logoHeight };
+    SDL_RenderCopy(renderer, logo, NULL, &logoRect);
+
+    int buttonWidth = 200, buttonHeight = 100;
+    SDL_Rect buttonRect = { (width - buttonWidth) / 2, (height - buttonHeight) / 2, buttonWidth, buttonHeight };
+    SDL_RenderCopy(renderer, StartBouton, NULL, &buttonRect);
 
     SDL_RenderPresent(renderer);
 }
 
-void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL_Texture *logo) {
-    SDL_Rect buttonRect = { (800 - 200) / 2, (600 - 100) / 2, 200, 100 };
-    SDL_RenderCopy(renderer, StartBouton, NULL, &buttonRect);
+void afficher_bouton_restart() {
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
 
-    SDL_Rect logoRect = { (600 - 200) / 2, (300 - 100) / 2, 500, 200 };
-    SDL_RenderCopy(renderer, logo, NULL, &logoRect);
+    int buttonWidth = 200, buttonHeight = 100;
+    SDL_Rect buttonRect = { (width - buttonWidth) / 2, height - buttonHeight - 25, buttonWidth, buttonHeight };
+    SDL_RenderCopy(renderer, RestartBouton, NULL, &buttonRect);
+
+    SDL_RenderPresent(renderer);
 }
 
-int initialisation_sdl(int height_sdl,int width_sdl) {
+int initialisation_sdl(int height_sdl, int width_sdl) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         perror("Erreur SDL_Init");
         return -1;
@@ -85,64 +103,59 @@ int initialisation_sdl(int height_sdl,int width_sdl) {
     window = SDL_CreateWindow("Tron", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width_sdl, height_sdl, SDL_WINDOW_SHOWN);
     if (!window) {
         perror("Erreur SDL_CreateWindow");
-        destroy_resources(window, NULL, NULL, NULL);
+        destroy_resources(window, NULL, NULL, NULL, NULL);
         return -1;
     }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         perror("Erreur SDL_CreateRenderer");
-        destroy_resources(window, NULL, NULL, NULL);
+        destroy_resources(window, NULL, NULL, NULL, NULL);
         return -1;
     }
 
     SDL_Surface *backgroundSurface = IMG_Load("src/utils/img/background.png");
     if (!backgroundSurface) {
         perror("Erreur IMG_Load (background)");
-        destroy_resources(window, renderer, NULL, NULL);
+        destroy_resources(window, renderer, NULL, NULL, NULL);
         return -1;
     }
-
     backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
 
-    if (!backgroundTexture) {
-        perror("Erreur SDL_CreateTextureFromSurface (background)");
-        destroy_resources(window, renderer, NULL, NULL);
+    SDL_Surface *startButtonSurface = IMG_Load("src/utils/img/start_bouton.png");
+    if (!startButtonSurface) {
+        perror("Erreur IMG_Load (start bouton)");
+        destroy_resources(window, renderer, backgroundTexture, NULL, NULL);
         return -1;
     }
+    StartBouton = SDL_CreateTextureFromSurface(renderer, startButtonSurface);
+    SDL_FreeSurface(startButtonSurface);
 
-    SDL_Surface *buttonSurface = IMG_Load("src/utils/img/start_bouton.png");
-    if (!buttonSurface) {
-        perror("Erreur IMG_Load (button)");
-        destroy_resources(window, renderer, backgroundTexture, NULL);
+    SDL_Surface *logoSurface = IMG_Load("src/utils/img/logo.png");
+    if (!logoSurface) {
+        perror("Erreur IMG_Load (logo)");
+        destroy_resources(window, renderer, backgroundTexture, StartBouton, NULL);
         return -1;
     }
+    Logo = SDL_CreateTextureFromSurface(renderer, logoSurface);
+    SDL_FreeSurface(logoSurface);
 
-    StartBouton = SDL_CreateTextureFromSurface(renderer, buttonSurface);
-    SDL_FreeSurface(buttonSurface);
-
-    if (!StartBouton) {
-        perror("Erreur SDL_CreateTextureFromSurface (button)");
-        destroy_resources(window, renderer, backgroundTexture, NULL);
+    SDL_Surface *restartButtonSurface = IMG_Load("src/utils/img/restart_bouton.png");
+    if (!restartButtonSurface) {
+        perror("Erreur IMG_Load (restart bouton)");
+        destroy_resources(window, renderer, backgroundTexture, StartBouton, NULL);
         return -1;
     }
-
-    SDL_Surface *LogoSurface = IMG_Load("src/utils/img/logo.png");
-    if (!LogoSurface) {
-        perror("Erreur IMG_Load (Logo)");
-        destroy_resources(window, renderer, backgroundTexture, NULL);
-        return -1;
-    }
-    Logo = SDL_CreateTextureFromSurface(renderer, LogoSurface);
-    SDL_FreeSurface(LogoSurface);
+    RestartBouton = SDL_CreateTextureFromSurface(renderer, restartButtonSurface);
+    SDL_FreeSurface(restartButtonSurface);
 
     SDL_Event event;
     int running = 1;
     Moto *moto1 = malloc(sizeof(Moto));
     Moto *moto2 = malloc(sizeof(Moto));
-
     Model *model = malloc(sizeof(Model));
+
     if (model == NULL) {
         fprintf(stderr, "Erreur : échec de l'allocation mémoire.\n");
         exit(EXIT_FAILURE);
@@ -159,9 +172,13 @@ int initialisation_sdl(int height_sdl,int width_sdl) {
     afficher_bouton_start(renderer, StartBouton, Logo);
     SDL_RenderPresent(renderer);
 
-    events(&event, &running, moto1, moto2, model, plateau);
+    events(window, &event, &running, moto1, moto2, model, plateau);
 
-    destroy_resources(window, renderer, backgroundTexture, StartBouton);
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+    afficher_bouton_restart(renderer, RestartBouton, Logo);
+
+    destroy_resources(window, renderer, backgroundTexture, StartBouton, RestartBouton);
 
     return 0;
 }
