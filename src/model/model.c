@@ -45,7 +45,7 @@ int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model) {
 void start_jeu(SDL_Event * event,int **plateau, Moto * moto1,Moto * moto2,Model * model,int *game_started) {
     while (avancer(plateau,moto1,moto2, model) == CONTINUER) {
         events_pendant_le_jeu(event,moto1,moto2,game_started,model,plateau);
-        usleep(400000);
+        usleep(300000);
     };
 }
 
@@ -63,6 +63,7 @@ Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model) {
         printf("Joueur 2 gagné\n");
         return JOUEUR2;
     }
+    plateau[moto1->y][moto1->x] = moto1->valeur;
 
     if (moto2->directions == HAUT && moto2->y > 0 && plateau[moto2->y-1][moto2->x] == 0) {
         moto2->y -= 1;
@@ -76,8 +77,6 @@ Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model) {
         printf("Joueur 1 gagné\n");
         return JOUEUR1;
     }
-
-    plateau[moto1->y][moto1->x] = moto1->valeur;
     plateau[moto2->y][moto2->x] = moto2->valeur;
 
     return CONTINUER;

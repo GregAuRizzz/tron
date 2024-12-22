@@ -23,18 +23,18 @@ void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *
 
 void PrintPlateau(Model *model, int **plateau) {
     int i, j;
-    int cellWidth = 800 / model->colonnes;
+    int cellWidth = 600 / model->colonnes;
     int cellHeight = 600 / model->lignes;
 
     int offsetX = (800 - (model->colonnes * cellWidth)) / 2;
-    int offsetY = (600 - (model->lignes * cellHeight)) / 2;
+    int offsetY = (600 - (model->lignes * cellHeight)) / 2; 
 
     for (i = 0; i < model->lignes - 2; i++) {
         for (j = 0; j < model->colonnes - 2; j++) {
             SDL_Rect cellRect = { offsetX + j * cellWidth, offsetY + i * cellHeight, cellWidth, cellHeight };
 
             if (plateau[i][j] == 0) {
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0); 
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0); 
             } 
             else if(plateau[i][j] == 2) {
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); 
@@ -52,7 +52,6 @@ void PrintPlateau(Model *model, int **plateau) {
 void destroy_start_button() {
     SDL_RenderClear(renderer);
 
-    // Redessiner le fond
     if (backgroundTexture) {
         SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
     }
@@ -80,7 +79,10 @@ int initialisation_sdl() {
         return -1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("Tron", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 700, 600, SDL_WINDOW_SHOWN);
+    int height_sdl = 700;
+    int width_sdl = 600;
+
+    SDL_Window *window = SDL_CreateWindow("Tron", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, height_sdl, width_sdl, SDL_WINDOW_SHOWN);
     if (!window) {
         perror("Erreur SDL_CreateWindow");
         destroy_resources(window, NULL, NULL, NULL);
@@ -146,8 +148,10 @@ int initialisation_sdl() {
         fprintf(stderr, "Erreur : échec de l'allocation mémoire.\n");
         exit(EXIT_FAILURE);
     }
-    model->colonnes = 50;
-    model->lignes = 21;
+    model->colonnes = (height_sdl/20)-10;
+    model->lignes = (width_sdl/20)-4;
+    
+    printf("%d,%d",model->colonnes,model->lignes);
 
     int **plateau = creationDuJeu(moto1, moto2, model);
 
