@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
     char choix = ' ';
-    int width = 50, height = 50; 
+    int width = 600, height = 600;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-ncurse") == 0) {
@@ -24,6 +24,12 @@ int main(int argc, char *argv[]) {
         initialisation_sdl(width, height);
 
     } else if (choix == 'n') {
+        width = width / 10;
+        height = height / 10;
+        if (width < 50 || height < 50) {
+            width = 50;
+            height = 50;
+        }
         initialisation_ncurses(height,width);
 
     } else {
