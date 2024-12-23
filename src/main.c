@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
     char choix = ' ';
-    int width = 600, height = 600; 
+    int width = 50, height = 50; 
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-ncurse") == 0) {

@@ -32,17 +32,14 @@ void events(SDL_Window *window, SDL_Event *event, int *running, Moto *moto1, Mot
 }
 
 
-void events_ncurses(Moto *moto1, Moto *moto2, Model *model, int **plateau) {
-    int ch;
-    while (1) {
-        ch = getch();
-        
-        if (ch == ERR) {
-            continue;
-        }
+int events_ncurses(Moto *moto1, Moto *moto2, int **plateau, Model *model) {
+    int ch = ERR;
 
+    nodelay(stdscr, TRUE);
+
+    if ((ch = getch()) != ERR) {
         switch (ch) {
-            case 'z':
+            case 'z': 
                 if (moto1->directions == GAUCHE || moto1->directions == DROITE) {
                     moto1->directions = HAUT;
                 }
@@ -52,7 +49,7 @@ void events_ncurses(Moto *moto1, Moto *moto2, Model *model, int **plateau) {
                     moto1->directions = GAUCHE;
                 }
                 break;
-            case 's':
+            case 's': 
                 if (moto1->directions == GAUCHE || moto1->directions == DROITE) {
                     moto1->directions = BAS;
                 }
@@ -62,22 +59,22 @@ void events_ncurses(Moto *moto1, Moto *moto2, Model *model, int **plateau) {
                     moto1->directions = DROITE;
                 }
                 break;
-            case KEY_UP:
+            case KEY_UP: 
                 if (moto2->directions == GAUCHE || moto2->directions == DROITE) {
                     moto2->directions = HAUT;
                 }
                 break;
-            case KEY_DOWN:
-                if (moto2->directions == DROITE || moto2->directions == GAUCHE) {
+            case KEY_DOWN: 
+                if (moto2->directions == GAUCHE || moto2->directions == DROITE) {
                     moto2->directions = BAS;
                 }
                 break;
-            case KEY_LEFT:
+            case KEY_LEFT: 
                 if (moto2->directions == HAUT || moto2->directions == BAS) {
                     moto2->directions = GAUCHE;
                 }
                 break;
-            case KEY_RIGHT:
+            case KEY_RIGHT: 
                 if (moto2->directions == HAUT || moto2->directions == BAS) {
                     moto2->directions = DROITE;
                 }
@@ -85,16 +82,9 @@ void events_ncurses(Moto *moto1, Moto *moto2, Model *model, int **plateau) {
             default:
                 break;
         }
-
-        // Advance the game, check for winning condition
-        Gagnant result = avancer(plateau, moto1, moto2, model);
-        if (result != CONTINUER) {
-            break; // End the game if someone wins or a tie occurs
-        }
     }
+    return avancer(plateau, moto1, moto2, model);
 }
-
-
 
 
 void clique_bouton_restart(SDL_Window *window, SDL_Event *event, int mouseX, int mouseY, Moto *moto1, Moto *moto2, int **plateau, Model *model,int * game_started) {
