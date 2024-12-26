@@ -86,6 +86,23 @@ int events_ncurses(Moto *moto1, Moto *moto2, int **plateau, Model *model) {
     return avancer(plateau, moto1, moto2, model);
 }
 
+int menu_navigation_ncurses(int current_choice, int num_options) {
+    int key = getch(); 
+    switch (key) {
+        case KEY_UP: 
+            current_choice = (current_choice == 0) ? num_options - 1 : current_choice - 1;
+            break;
+        case KEY_DOWN: 
+            current_choice = (current_choice == num_options - 1) ? 0 : current_choice + 1;
+            break;
+        case '\n': 
+            return -1; 
+        default:
+            break;
+    }
+    return current_choice;
+}
+
 
 void clique_bouton_restart(SDL_Window *window, SDL_Event *event, int mouseX, int mouseY, Moto *moto1, Moto *moto2, int **plateau, Model *model,int * game_started) {
     int width, height;

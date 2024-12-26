@@ -30,7 +30,19 @@ int main(int argc, char *argv[]) {
             width = 50;
             height = 50;
         }
-        initialisation_ncurses(height,width);
+
+        int menu_choice = display_menu();
+        switch (menu_choice) {
+            case 0: // Start Game
+                initialisation_ncurses(height, width);
+                break;
+            case 1: // Quit
+                printf("Merci d'avoir joué !\n");
+                break;
+            default:
+                printf("Choix invalide.\n");
+                break;
+        }
 
     } else {
         printf("Option non valide. Veuillez utiliser -ncurse ou -sdl.\n");

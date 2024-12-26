@@ -70,3 +70,81 @@ void initialisation_ncurses(int height, int width) {
 
     endwin();
 }
+
+int display_menu() {
+    initscr();           
+    start_color();       
+    noecho();            
+    curs_set(FALSE);     
+    keypad(stdscr, TRUE);
+
+    init_pair(1, COLOR_WHITE, COLOR_BLUE);  
+    init_pair(2, COLOR_WHITE, COLOR_BLACK); 
+
+    const char *options[] = {
+        "1. Lancer le jeu",
+        "2. Quitter"
+    };
+    int num_options = sizeof(options) / sizeof(options[0]);
+    int choice = 0; 
+
+    int max_y, max_x;
+    getmaxyx(stdscr, max_y, max_x);
+
+    const char *tron[] = {
+        "_____ ____  ____  _   _",
+        "  |  (  _ \\( __ )| \\ | |",
+        "  |   )   /| __ ||  \\| |",
+        "  |  (__\\_)(____)|__|\\_|"
+    };
+
+    int tron_height = sizeof(tron) / sizeof(tron[0]);
+
+    int tron_x = (max_x - strlen(tron[0])) / 2;
+    int tron_y = (max_y - tron_height) / 6;
+
+    while (1) {
+        clear(); 
+
+        for (int i = 0; i < max_x; i++) {
+            mvprintw(tron_y - 1, i, "_");
+        }
+
+        for (int i = 0; i < tron_height; i++) {
+            mvprintw(tron_y + i, tron_x, "%s", tron[i]);
+        }
+
+        for (int i = 0; i < max_x; i++) {
+            mvprintw(tron_y + tron_height, i, "_");
+        }
+
+        const char *title = "Bienvenue dans le jeu Tron !";
+        mvprintw(tron_y + tron_height + 2, (max_x - strlen(title)) / 2, "%s", title);
+
+        const char *instructions = "Utilisez les flèches pour naviguer, et Entrée pour sélectionner.";
+        mvprintw(tron_y + tron_height + 3, (max_x - strlen(instructions)) / 2, "%s", instructions);
+
+        for (int i = 0; i < num_options; ++i) {
+            if (i == choice) {
+                attron(COLOR_PAIR(1)); 
+                mvprintw(max_y / 2 + i, (max_x - strlen(options[i])) / 2, "%s", options[i]);
+                attroff(COLOR_PAIR(1));
+            } else {
+                attron(COLOR_PAIR(2)); 
+                mvprintw(max_y / 2 + i, (max_x - strlen(options[i])) / 2, "%s", options[i]);
+                attroff(COLOR_PAIR(2));
+            }
+        }
+
+        int new_choice = menu_navigation_ncurses(choice, num_options);
+        if (new_choice == -1) { 
+            endwin(); 
+            return choice;
+        }
+        choice = new_choice; 
+    }
+
+    endwin(); 
+    return choice;
+}
+
