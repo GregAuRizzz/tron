@@ -160,8 +160,8 @@ int initialisation_sdl(int height_sdl, int width_sdl) {
         fprintf(stderr, "Erreur : échec de l'allocation mémoire.\n");
         exit(EXIT_FAILURE);
     }
-    model->colonnes = 100;
-    model->lignes = 70;
+    model->colonnes = 150;
+    model->lignes = 100;
 
     int **plateau = creationDuJeu(moto1, moto2, model);
 

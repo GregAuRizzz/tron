@@ -41,7 +41,7 @@ void start_jeu(SDL_Window *window, SDL_Event *event, int **plateau, Moto *moto1,
     int width, height;
     while (avancer(plateau, moto1, moto2, model) == CONTINUER) {
         events_pendant_le_jeu(event, moto1, moto2, game_started, model, plateau);
-        usleep(100000);
+        usleep(40000);
     }
 
     Gagnant winner = avancer(plateau, moto1, moto2, model);
@@ -59,6 +59,8 @@ void start_jeu(SDL_Window *window, SDL_Event *event, int **plateau, Moto *moto1,
 
 
 Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2, Model *model) {
+    int retour = 0;
+
     if (moto1->directions == HAUT && moto1->y > 0 && plateau[moto1->y - 1][moto1->x] == 0) {
         moto1->y -= 1;
     } else if (moto1->directions == BAS && moto1->y < model->lignes - 1 && plateau[moto1->y + 1][moto1->x] == 0) {
@@ -68,9 +70,8 @@ Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2, Model *model) {
     } else if (moto1->directions == GAUCHE && moto1->x > 0 && plateau[moto1->y][moto1->x - 1] == 0) {
         moto1->x -= 1;
     } else {
-        return JOUEUR2;
+        retour += 5; 
     }
-    plateau[moto1->y][moto1->x] = moto1->valeur;
 
     if (moto2->directions == HAUT && moto2->y > 0 && plateau[moto2->y - 1][moto2->x] == 0) {
         moto2->y -= 1;
@@ -81,12 +82,27 @@ Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2, Model *model) {
     } else if (moto2->directions == GAUCHE && moto2->x > 0 && plateau[moto2->y][moto2->x - 1] == 0) {
         moto2->x -= 1;
     } else {
-        return JOUEUR1;
+        retour += 10;
     }
-    plateau[moto2->y][moto2->x] = moto2->valeur;
 
-    return CONTINUER;
+    if (moto1->x == moto2->x && moto1->y == moto2->y) {
+        return EGALITE;
+    }
+
+    if (retour == 0) {
+        plateau[moto1->y][moto1->x] = moto1->valeur;
+        plateau[moto2->y][moto2->x] = moto2->valeur;
+    } else if (retour == 5) {
+        return JOUEUR2; 
+    } else if (retour == 10) {
+        return JOUEUR1;
+    } else if (retour == 15) {
+        return EGALITE; 
+    }
+
+    return CONTINUER;  
 }
+
 
 void free_jeu(int **plateau, Model model) {
     for (int i = 0; i < model.lignes; i++) {
