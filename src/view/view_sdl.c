@@ -1,5 +1,8 @@
 #include "view_sdl.h"
 
+
+// Les variables globales sont utiles ici puisque ça permet de ne pas utiliser des paramètres inutiles, j'aurai pu passer des pointeurs
+// et mettre les SDL texture dans une structure, mais par rapport à la taille du projet c'était overkill, même si c'est pas toujours la meilleure pratique
 SDL_Texture *StartBouton;
 SDL_Renderer *renderer;
 SDL_Texture *backgroundTexture;
@@ -7,6 +10,8 @@ SDL_Texture *Logo;
 SDL_Window *window;
 SDL_Texture *RestartBouton;
 
+
+// destruction des ressources, si jamais y'a un problème a l'initialisation
 void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *backgroundTexture, SDL_Texture *StartBouton, SDL_Texture *RestartBouton) {
     if (RestartBouton) SDL_DestroyTexture(RestartBouton);
     if (StartBouton) SDL_DestroyTexture(StartBouton);
@@ -17,6 +22,7 @@ void destroy_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *
     SDL_Quit();
 }
 
+// Affichage du plateau, en parcourant la boucle
 void PrintPlateau(Model *model, int **plateau) {
     int width, height;
     SDL_GetWindowSize(window, &width, &height);
@@ -47,6 +53,7 @@ void PrintPlateau(Model *model, int **plateau) {
     SDL_RenderPresent(renderer);
 }
 
+// Disparition du bouton 
 void destroy_start_button() {
     SDL_RenderClear(renderer);
     if (backgroundTexture) {
@@ -55,8 +62,7 @@ void destroy_start_button() {
     SDL_RenderPresent(renderer);
 }
 
-
-
+// Affichage du bouton start (simple)
 void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL_Texture *logo) {
     int width, height;
     SDL_GetWindowSize(window, &width, &height);
@@ -77,6 +83,7 @@ void afficher_bouton_start(SDL_Renderer *renderer, SDL_Texture *StartBouton, SDL
     SDL_RenderPresent(renderer);
 }
 
+// Affichage du bouton restart (simple)
 void afficher_bouton_restart() {
     int width, height;
     SDL_GetWindowSize(window, &width, &height);
@@ -88,7 +95,10 @@ void afficher_bouton_restart() {
     SDL_RenderPresent(renderer);
 }
 
+// Initialisation de la sdl, et gestion des erreurs
 int initialisation_sdl(int height_sdl, int width_sdl) {
+
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         perror("Erreur SDL_Init");
         return -1;
@@ -150,6 +160,10 @@ int initialisation_sdl(int height_sdl, int width_sdl) {
     RestartBouton = SDL_CreateTextureFromSurface(renderer, restartButtonSurface);
     SDL_FreeSurface(restartButtonSurface);
 
+
+
+
+
     SDL_Event event;
     int running = 1;
     Moto *moto1 = malloc(sizeof(Moto));
@@ -160,14 +174,18 @@ int initialisation_sdl(int height_sdl, int width_sdl) {
         fprintf(stderr, "Erreur : échec de l'allocation mémoire.\n");
         exit(EXIT_FAILURE);
     }
+
+    // modulable :
     model->colonnes = 150;
     model->lignes = 100;
 
     int **plateau = creationDuJeu(moto1, moto2, model);
 
+    // Démarrage, affichage du menu :
     SDL_SetRenderDrawColor(renderer, 19, 19, 40, 255);
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
 
     afficher_bouton_start(renderer, StartBouton, Logo);
     SDL_RenderPresent(renderer);

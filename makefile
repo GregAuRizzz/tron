@@ -15,6 +15,7 @@ all: $(TARGET)
 $(TARGET): $(OBJ)
 	mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	cp $(BIN_DIR)/main ./
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(dir $@)
