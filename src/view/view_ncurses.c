@@ -19,31 +19,60 @@ void afficher_plateau(int **plateau, Model *model) {
 
 
 void boucle_ncurses(int **plateau, Moto *moto1, Moto *moto2, Model *model) {
-    Gagnant result = CONTINUER;
+    Gagnant result;
 
-    while (result == CONTINUER) {
+    int max_y, max_x;
+    getmaxyx(stdscr, max_y, max_x); 
+
+    const char *replay_prompt = "Voulez-vous rejouer ? (o/n)";
+
+    int replay_x = (max_x - strlen(replay_prompt)) / 2;
+    int replay_y = max_y / 4 + 2;
+
+    do {
+        result = CONTINUER;
+
+        while (result == CONTINUER) {
+            clear();
+            afficher_plateau(plateau, model);
+
+            result = events_ncurses(moto1, moto2, plateau, model);
+
+            refresh();  
+            napms(200);
+        }
+
         clear();
+        if (result == JOUEUR1) {
+            mvprintw(max_y / 4 + 1, (max_x - 17) / 2, "Joueur 1 gagne!");
+        } else if (result == JOUEUR2) {
+            mvprintw(max_y / 4 + 1, (max_x - 17) / 2, "Joueur 2 gagne!");
+        } else {
+            mvprintw(max_y / 4 + 1, (max_x - 8) / 2, "Egalite!");
+        }
+        refresh();
 
-        afficher_plateau(plateau, model); 
+        mvprintw(replay_y, replay_x, "%s", replay_prompt);
+        refresh();
 
-        result = events_ncurses(moto1, moto2, plateau, model);
+        char choice;
+        do {
+            choice = getch();
+        } while (choice != 'o' && choice != 'n');
 
-        refresh();  
-        napms(200);
-    }
+        if (choice == 'o') {
+            free_jeu(plateau, *model);
+            plateau = creationDuJeu(moto1, moto2, model);
+        } else {
+            break; 
+        }
+    } while (1);
 
     clear();
-    if (result == JOUEUR1) {
-        mvprintw(model->lignes / 2, model->colonnes, "Joueur 1 gagne!");
-    } else if (result == JOUEUR2) {
-        mvprintw(model->lignes / 2, model->colonnes, "Joueur 2 gagne!");
-    } else {
-        mvprintw(model->lignes / 2, model->colonnes, "Egalite!");
-    }
-    refresh();  
-    getch(); 
+    mvprintw(max_y / 4, (max_x - 19) / 2, "Merci d'avoir joué !");
+    refresh();
+    napms(2000);
 }
-
 
 void initialisation_ncurses(int height, int width) {
     initscr();

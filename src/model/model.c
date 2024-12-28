@@ -1,5 +1,16 @@
 #include "model.h"
 
+const char* gagnant_message(Gagnant resultat) {
+    switch (resultat) {
+        case JOUEUR1: return "Le joueur 1 a gagné !";
+        case JOUEUR2: return "Le joueur 2 a gagné !";
+        case EGALITE: return "Égalité !";
+        case CONTINUER: return "";
+        default: return "Erreur inconnue.";
+    }
+}
+
+
 int **creationDuJeu(Moto *moto1, Moto *moto2, Model *model) {
     int colonnes = model->colonnes;
     int lignes = model->lignes;

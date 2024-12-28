@@ -26,5 +26,6 @@ int ** creationDuJeu(Moto * moto1,Moto * moto2,Model * model);
 void start_jeu(SDL_Window * window,SDL_Event * event,int **plateau, Moto * moto1,Moto * moto2,Model * model,int *game_started);
 Gagnant avancer(int **plateau, Moto *moto1, Moto *moto2,Model * model);
 void free_jeu(int **plateau, Model model);
+const char* gagnant_message(Gagnant resultat);
 
 #endif
