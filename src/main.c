@@ -4,10 +4,13 @@
 #include <view/view_sdl.h>
 #include <view/view_ncurses.h>
 
+
+
 int main(int argc, char *argv[]) {
     char choix = ' ';
     int width = 600, height = 600;
 
+    // On gère les paramètres si y'a la taille alors on l'utilise pour créer la fenêtre
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-ncurse") == 0) {
             choix = 'n';
@@ -30,13 +33,13 @@ int main(int argc, char *argv[]) {
             width = 50;
             height = 50;
         }
-
+        
         int menu_choice = display_menu();
         switch (menu_choice) {
-            case 0: // Start Game
+            case 0:
                 initialisation_ncurses(height, width);
                 break;
-            case 1: // Quit
+            case 1: 
                 printf("Merci d'avoir joué !\n");
                 break;
             default:

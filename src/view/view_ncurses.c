@@ -2,6 +2,7 @@
 #include "model/model.h"
 #include "controller/control.h"
 
+// Permet d'afficher le plateau en temps réel
 void afficher_plateau(int **plateau, Model *model) {
     for (int i = 0; i < model->lignes; i++) {
         for (int j = 0; j < model->colonnes; j++) {
@@ -17,7 +18,7 @@ void afficher_plateau(int **plateau, Model *model) {
     refresh();
 }
 
-
+// Boucle principale du jeu, retourne le gagnant
 void boucle_ncurses(int **plateau, Moto *moto1, Moto *moto2, Model *model) {
     Gagnant result;
 
@@ -74,6 +75,7 @@ void boucle_ncurses(int **plateau, Moto *moto1, Moto *moto2, Model *model) {
     napms(2000);
 }
 
+// Initialisation de la ncurse
 void initialisation_ncurses(int height, int width) {
     initscr();
     noecho();
@@ -100,6 +102,7 @@ void initialisation_ncurses(int height, int width) {
     endwin();
 }
 
+// affichage du menu et navigation dedans
 int display_menu() {
     initscr();           
     start_color();       
@@ -176,4 +179,3 @@ int display_menu() {
     endwin(); 
     return choice;
 }
-
