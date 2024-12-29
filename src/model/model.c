@@ -64,9 +64,9 @@ void start_jeu(SDL_Window *window, SDL_Event *event, int **plateau, Moto *moto1,
     // problème au niveau de sdl_ttf pour aficher du texte donc impossible à faire
     Gagnant winner = avancer(plateau, moto1, moto2, model);
     if (winner == JOUEUR1) {
-        printf("Joueur 1 gagnant\n");
+        printf("Joueur bleu gagnant \n");
     } else if (winner == JOUEUR2) {
-        printf("Joueur 2 gagnant\n");
+        printf("Joueur rouge gagnant \n");
     } else {
         printf("Égalité\n");
     }

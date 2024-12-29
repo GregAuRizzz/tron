@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -I./src -g
+CFLAGS = -std=c99 -I./src -g -Wno-implicit-function-declaration
 LDFLAGS = -w -lncurses -lSDL2 -lSDL2_image
 
 SRC_DIR = src
@@ -14,7 +14,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CC) -Wall -Wextra -Wno-unused-parameter $(CFLAGS) $^ -o $@ $(LDFLAGS)
 	cp $(BIN_DIR)/main ./
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c

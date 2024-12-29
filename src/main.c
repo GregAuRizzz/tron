@@ -4,13 +4,11 @@
 #include <view/view_sdl.h>
 #include <view/view_ncurses.h>
 
-
-
 int main(int argc, char *argv[]) {
     char choix = ' ';
-    int width = 600, height = 600;
+    int width = 600, height = 500; // Taille par défaut pour SDL
 
-    // On gère les paramètres si y'a la taille alors on l'utilise pour créer la fenêtre
+    // Gestion des paramètres
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-ncurse") == 0) {
             choix = 'n';
@@ -23,10 +21,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (choix == 's') {
+    if (choix == 's' || choix == ' ') {
         initialisation_sdl(width, height);
 
     } else if (choix == 'n') {
+        // calcul de la taille pour ncurses
         width = width / 10;
         height = height / 10;
         if (width < 50 || height < 50) {
